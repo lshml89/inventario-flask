@@ -2,15 +2,19 @@ from flask import Flask, render_template, request, redirect, url_for, session, R
 import sqlite3
 import csv
 import io
+import os
 from datetime import date
 
 app = Flask(__name__)
 app.secret_key = "clave_secreta"
 
 
-# 🔥 CONEXIÓN CORRECTA SQLITE
+# 🔥 CONEXIÓN SQLITE CORREGIDA PARA RENDER
 def conectar():
-    conexion = sqlite3.connect("inventario.db")
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    db_path = os.path.join(BASE_DIR, "inventario.db")
+
+    conexion = sqlite3.connect(db_path)
     conexion.row_factory = sqlite3.Row
     return conexion
 
