@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session, Response
-import mysql.connector
+import sqlite3
 import csv
 import io
 from datetime import date
@@ -8,13 +8,44 @@ app = Flask(__name__)
 app.secret_key = "clave_secreta"
 
 
+# 🔥 CONEXIÓN CORRECTA SQLITE
 def conectar():
-    return mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="",
-        database="inventario_db"
+    conexion = sqlite3.connect("inventario.db")
+    conexion.row_factory = sqlite3.Row
+    return conexion
+
+
+# 🔥 CREAR TABLAS AUTOMÁTICO
+def crear_bd():
+    conexion = conectar()
+    cursor = conexion.cursor()
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS usuarios (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        usuario TEXT,
+        password TEXT
     )
+    """)
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS productos (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nombre TEXT,
+        precio REAL,
+        stock INTEGER,
+        categoria TEXT,
+        fecha TEXT
+    )
+    """)
+
+    # usuario por defecto
+    cursor.execute("SELECT * FROM usuarios WHERE usuario='admin'")
+    if not cursor.fetchone():
+        cursor.execute("INSERT INTO usuarios (usuario, password) VALUES (?, ?)", ("admin", "123"))
+
+    conexion.commit()
+    conexion.close()
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -24,16 +55,15 @@ def login():
         password = request.form["password"]
 
         conexion = conectar()
-        cursor = conexion.cursor(dictionary=True)
+        cursor = conexion.cursor()
 
         cursor.execute(
-            "SELECT * FROM usuarios WHERE usuario=%s AND password=%s",
+            "SELECT * FROM usuarios WHERE usuario=? AND password=?",
             (usuario, password)
         )
 
         user = cursor.fetchone()
 
-        cursor.close()
         conexion.close()
 
         if user:
@@ -51,10 +81,9 @@ def inventario():
         return redirect(url_for("login"))
 
     conexion = conectar()
-    cursor = conexion.cursor(dictionary=True)
+    cursor = conexion.cursor()
     cursor.execute("SELECT * FROM productos ORDER BY id DESC")
     productos = cursor.fetchall()
-    cursor.close()
     conexion.close()
 
     return render_template("index.html", productos=productos)
@@ -75,11 +104,10 @@ def agregar():
         conexion = conectar()
         cursor = conexion.cursor()
         cursor.execute(
-            "INSERT INTO productos (nombre, precio, stock, categoria, fecha) VALUES (%s, %s, %s, %s, %s)",
+            "INSERT INTO productos (nombre, precio, stock, categoria, fecha) VALUES (?, ?, ?, ?, ?)",
             (nombre, precio, stock, categoria, fecha)
         )
         conexion.commit()
-        cursor.close()
         conexion.close()
 
         return redirect(url_for("inventario"))
@@ -93,7 +121,7 @@ def editar(id):
         return redirect(url_for("login"))
 
     conexion = conectar()
-    cursor = conexion.cursor(dictionary=True)
+    cursor = conexion.cursor()
 
     if request.method == "POST":
         nombre = request.form["nombre"]
@@ -102,19 +130,17 @@ def editar(id):
         categoria = request.form["categoria"]
 
         cursor.execute(
-            "UPDATE productos SET nombre=%s, precio=%s, stock=%s, categoria=%s WHERE id=%s",
+            "UPDATE productos SET nombre=?, precio=?, stock=?, categoria=? WHERE id=?",
             (nombre, precio, stock, categoria, id)
         )
         conexion.commit()
-        cursor.close()
         conexion.close()
 
         return redirect(url_for("inventario"))
 
-    cursor.execute("SELECT * FROM productos WHERE id=%s", (id,))
+    cursor.execute("SELECT * FROM productos WHERE id=?", (id,))
     producto = cursor.fetchone()
 
-    cursor.close()
     conexion.close()
 
     return render_template("editar.html", producto=producto)
@@ -127,9 +153,8 @@ def eliminar(id):
 
     conexion = conectar()
     cursor = conexion.cursor()
-    cursor.execute("DELETE FROM productos WHERE id=%s", (id,))
+    cursor.execute("DELETE FROM productos WHERE id=?", (id,))
     conexion.commit()
-    cursor.close()
     conexion.close()
 
     return redirect(url_for("inventario"))
@@ -149,20 +174,18 @@ def reporte():
         hasta = request.form["hasta"]
 
         conexion = conectar()
-        cursor = conexion.cursor(dictionary=True)
+        cursor = conexion.cursor()
 
         cursor.execute(
             """
             SELECT * FROM productos
-            WHERE DATE(fecha) BETWEEN %s AND %s
+            WHERE date(fecha) BETWEEN ? AND ?
             ORDER BY fecha DESC
             """,
             (desde, hasta)
         )
 
         resultados = cursor.fetchall()
-
-        cursor.close()
         conexion.close()
 
     return render_template("reporte.html", resultados=resultados, desde=desde, hasta=hasta)
@@ -177,20 +200,18 @@ def exportar_csv():
     hasta = request.args.get("hasta")
 
     conexion = conectar()
-    cursor = conexion.cursor(dictionary=True)
+    cursor = conexion.cursor()
 
     cursor.execute(
         """
         SELECT * FROM productos
-        WHERE DATE(fecha) BETWEEN %s AND %s
+        WHERE date(fecha) BETWEEN ? AND ?
         ORDER BY fecha DESC
         """,
         (desde, hasta)
     )
 
     productos = cursor.fetchall()
-
-    cursor.close()
     conexion.close()
 
     salida = io.StringIO()
@@ -221,4 +242,5 @@ def logout():
 
 
 if __name__ == "__main__":
+    crear_bd()  # 🔥 crea todo automático
     app.run(debug=True)
