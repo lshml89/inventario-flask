@@ -8,10 +8,7 @@ from datetime import date
 app = Flask(__name__)
 app.secret_key = "clave_secreta"
 
-crear_bd()   # 👈 AGREGA ESTA LÍNEA
 
-
-# 🔥 CONEXIÓN SQLITE CORREGIDA PARA RENDER
 def conectar():
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     db_path = os.path.join(BASE_DIR, "inventario.db")
@@ -21,7 +18,6 @@ def conectar():
     return conexion
 
 
-# 🔥 CREAR TABLAS AUTOMÁTICO
 def crear_bd():
     conexion = conectar()
     cursor = conexion.cursor()
@@ -45,13 +41,18 @@ def crear_bd():
     )
     """)
 
-    # usuario por defecto
-    cursor.execute("SELECT * FROM usuarios WHERE usuario='admin'")
+    cursor.execute("SELECT * FROM usuarios WHERE usuario=?", ("admin",))
     if not cursor.fetchone():
-        cursor.execute("INSERT INTO usuarios (usuario, password) VALUES (?, ?)", ("admin", "123"))
+        cursor.execute(
+            "INSERT INTO usuarios (usuario, password) VALUES (?, ?)",
+            ("admin", "123")
+        )
 
     conexion.commit()
     conexion.close()
+
+
+crear_bd()
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -62,14 +63,11 @@ def login():
 
         conexion = conectar()
         cursor = conexion.cursor()
-
         cursor.execute(
             "SELECT * FROM usuarios WHERE usuario=? AND password=?",
             (usuario, password)
         )
-
         user = cursor.fetchone()
-
         conexion.close()
 
         if user:
@@ -146,7 +144,6 @@ def editar(id):
 
     cursor.execute("SELECT * FROM productos WHERE id=?", (id,))
     producto = cursor.fetchone()
-
     conexion.close()
 
     return render_template("editar.html", producto=producto)
@@ -181,7 +178,6 @@ def reporte():
 
         conexion = conectar()
         cursor = conexion.cursor()
-
         cursor.execute(
             """
             SELECT * FROM productos
@@ -190,7 +186,6 @@ def reporte():
             """,
             (desde, hasta)
         )
-
         resultados = cursor.fetchall()
         conexion.close()
 
@@ -207,7 +202,6 @@ def exportar_csv():
 
     conexion = conectar()
     cursor = conexion.cursor()
-
     cursor.execute(
         """
         SELECT * FROM productos
@@ -216,7 +210,6 @@ def exportar_csv():
         """,
         (desde, hasta)
     )
-
     productos = cursor.fetchall()
     conexion.close()
 
@@ -248,5 +241,4 @@ def logout():
 
 
 if __name__ == "__main__":
-    crear_bd()  # 🔥 crea todo automático
     app.run(debug=True)
