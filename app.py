@@ -8,6 +8,8 @@ from datetime import date
 app = Flask(__name__)
 app.secret_key = "clave_secreta"
 
+crear_bd()   # 👈 AGREGA ESTA LÍNEA
+
 
 # 🔥 CONEXIÓN SQLITE CORREGIDA PARA RENDER
 def conectar():
