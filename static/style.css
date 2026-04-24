@@ -1,0 +1,223 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #dddddd;
+}
+
+.container,
+.card {
+    background: #fffafa;
+    width: 70%;
+    margin: 70px auto;
+    padding: 35px;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px #aaa;
+    text-align: center;
+}
+
+.login-card {
+    width: 350px;
+}
+
+h1, h2 {
+    margin-bottom: 25px;
+    font-size: 22px;
+}
+
+.actions {
+    text-align: right;
+    margin-bottom: 15px;
+}
+
+.btn, button {
+    background: #5b9bea;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 4px;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.danger {
+    background: #e74c3c;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+th {
+    background: #5b9bea;
+    color: white;
+    padding: 8px;
+}
+
+td {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+}
+
+.mini-btn {
+    background: #5b9bea;
+    color: white;
+    padding: 5px 8px;
+    border-radius: 3px;
+    text-decoration: none;
+    font-size: 12px;
+}
+
+form {
+    text-align: left;
+}
+
+label {
+    display: block;
+    margin-top: 12px;
+    font-size: 13px;
+}
+
+input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 4px;
+    box-sizing: border-box;
+}
+
+button {
+    margin-top: 18px;
+    width: 100%;
+}
+
+.error {
+    color: red;
+}
+
+.form-card {
+    background: #fffafa;
+    width: 52%;
+    min-height: 430px;
+    margin: 90px auto;
+    padding: 50px 70px;
+    border-radius: 8px;
+    box-shadow: 0 3px 7px #999;
+}
+
+.form-card h2 {
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 40px;
+    color: #333;
+}
+
+.form-card form {
+    width: 60%;
+    margin: auto;
+}
+
+.form-card label {
+    font-weight: bold;
+    font-size: 13px;
+    margin-top: 12px;
+}
+
+.form-card input,
+.form-card select {
+    width: 100%;
+    height: 34px;
+    margin-bottom: 10px;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    padding: 6px;
+    box-sizing: border-box;
+}
+
+.form-buttons {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.form-buttons button,
+.form-buttons .btn {
+    width: auto;
+    margin: 0 12px;
+    padding: 9px 25px;
+}
+
+.reporte-card {
+    background: #fdfafa;
+    width: 60%;
+    margin: 90px auto;
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px #aaa;
+    text-align: center;
+}
+
+.reporte-card h2 {
+    font-size: 26px;
+    margin-bottom: 30px;
+    color: #333;
+}
+
+.reporte-form {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 25px;
+    margin-bottom: 20px;
+}
+
+.reporte-form div {
+    text-align: left;
+}
+
+.reporte-form label {
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.reporte-form input {
+    width: 180px;
+    height: 32px;
+    border-radius: 4px;
+    border: 1px solid #aaa;
+    padding: 4px;
+}
+
+.reporte-form button {
+    background: #5b9bea;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.reporte-form .btn {
+    background: #5b9bea;
+    color: white;
+    padding: 8px 20px;
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+.reporte-card table {
+    width: 78%;
+    margin: 15px auto 0 auto;
+    border-collapse: collapse;
+}
+
+.reporte-card th {
+    background: #5b9bea;
+    color: white;
+    padding: 8px;
+}
+
+.reporte-card td {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+}

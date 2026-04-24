@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Inventario</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Sistema de Inventario de Productos</h1>
+
+        <div class="actions">
+          <a href="{{ url_for('agregar') }}" class="btn">+ Agregar Producto</a>
+           <a href="{{ url_for('reporte') }}" class="btn">Reporte por fecha</a>
+            <a href="{{ url_for('logout') }}" class="btn danger">Salir</a>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                    <th>Categoría</th>
+                    <th>Fecha</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in productos %}
+                <tr>
+                    <td>{{ p.id }}</td>
+                    <td>{{ p.nombre }}</td>
+                    <td>S/. {{ p.precio }}</td>
+                    <td>{{ p.stock }}</td>
+                    <td>{{ p.categoria }}</td>
+                  <td>{{ p.fecha }}</td>
+                    <td>
+                       <a href="{{ url_for('editar', id=p.id) }}" class="mini-btn">Editar</a>
+                        <a href="{{ url_for('eliminar', id=p.id) }}" class="mini-btn danger">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

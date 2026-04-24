@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte de Productos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="reporte-card">
+    <h2>Reporte de Productos</h2>
+
+    <form method="POST" class="reporte-form">
+        <div>
+            <label>Desde</label>
+            <input type="date" name="desde" value="{{ desde }}" required>
+        </div>
+
+        <div>
+            <label>Hasta</label>
+            <input type="date" name="hasta" value="{{ hasta }}" required>
+        </div>
+
+        <button type="submit">Buscar</button>
+        <a href="{{ url_for('inventario') }}" class="btn">Volver</a>
+    </form>
+
+    <!-- 🔥 BOTÓN EXPORTAR CSV -->
+    {% if resultados %}
+    <div style="margin-top:15px;">
+        <a href="{{ url_for('exportar_csv', desde=desde, hasta=hasta) }}" class="btn">
+            Exportar CSV
+        </a>
+    </div>
+    {% endif %}
+
+    <!-- 🔥 TABLA -->
+    {% if resultados %}
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Precio</th>
+                <th>Stock</th>
+                <th>Categoría</th>
+                <th>Fecha</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in resultados %}
+            <tr>
+                <td>{{ p.id }}</td>
+                <td>{{ p.nombre }}</td>
+                <td>S/. {{ p.precio }}</td>
+                <td>{{ p.stock }}</td>
+                <td>{{ p.categoria }}</td>
+                <td>{{ p.fecha }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+</div>
+
+</body>
+</html>
